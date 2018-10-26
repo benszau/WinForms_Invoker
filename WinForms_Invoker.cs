@@ -143,6 +143,87 @@ namespace WinForms_Invoker
             }
         }
 
-        
+        private delegate void setBackColorHandler(object target, Color backColor);
+        /// <summary>
+        /// Set the backcolor of the given object GUI-thread-save using invoke.
+        /// </summary>
+        /// <param name="target">The object that should be enabled. Check if the object type is supported...</param>
+        /// <param name="enable">The backcolor that is to be set</param>
+        protected void setBackColor(object target, Color backColor)
+        {
+            if (target == null)
+            {
+                return;
+            }
+
+            if (this.InvokeRequired) //me is an objekt of aktual Form
+            {
+                Invoke(new setBackColorHandler(setBackColor), new object[] { target, backColor });
+                return;
+            }
+
+            //set content - switch by type
+            if (target.GetType() == typeof(Button))
+            {
+                ((Button)target).BackColor = backColor;
+            }
+            else if (target.GetType() == typeof(TextBox))
+            {
+                ((TextBox)target).BackColor = backColor;
+            }
+            else if (target.GetType() == typeof(CheckBox))
+            {
+                ((CheckBox)target).BackColor = backColor;
+            }
+            else
+            {
+                throw new NotSupportedException("iotec.GUI.Common - setBackColor(..): ERROR: The objecttype is not supported! Please add the object type to the setBackColor() Functiuon.");
+            }
+        }
+
+        private delegate void setForeColorHandler(object target, Color backColor);
+        /// <summary>
+        /// Set the forecolor of the given object GUI-thread-save using invoke.
+        /// </summary>
+        /// <param name="target">The object that should be enabled. Check if the object type is supported...</param>
+        /// <param name="enable">The forecolor that is to be set</param>
+        protected void setForeColor(object target, Color foreColor)
+        {
+            if (target == null)
+            {
+                return;
+            }
+
+            if (this.InvokeRequired) //me is an objekt of aktual Form
+            {
+                Invoke(new setForeColorHandler(setForeColor), new object[] { target, foreColor });
+                return;
+            }
+
+            //set content - switch by type
+            if (target.GetType() == typeof(Button))
+            {
+                ((Button)target).ForeColor = foreColor;
+            }
+            else if (target.GetType() == typeof(TextBox))
+            {
+                ((TextBox)target).ForeColor = foreColor;
+            }
+            else if (target.GetType() == typeof(CheckBox))
+            {
+                ((CheckBox)target).ForeColor = foreColor;
+            }
+            else if (target.GetType() == typeof(CheckedListBox))
+            {
+                ((CheckedListBox)target).ForeColor = foreColor;
+            }
+            else
+            {
+                throw new NotSupportedException("iotec.GUI.Common - setBackColor(..): ERROR: The objecttype is not supported! Please add the object type to the setBackColor() Functiuon.");
+            }
+        }
+
+      
+      
     }
 }

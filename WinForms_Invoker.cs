@@ -105,6 +105,44 @@ namespace WinForms_Invoker
             }
         }
 
+        private delegate void setBackgroundImageHandler(object target, Image image);
+        /// <summary>
+        /// Set the background image of the given object GUI-thread-save using invoke.
+        /// </summary>
+        /// <param name="target">The object that should be enabled. Check if the object type is supported...</param>
+        /// <param name="image">The image that is to be set</param>
+        protected void setBackgroundImage(object target, Image backgroundImage)
+        {
+            if (target == null)
+            {
+                return;
+            }
+
+            if (this.InvokeRequired) //me is an objekt of aktual Form
+            {
+                Invoke(new setBackgroundImageHandler(setBackgroundImage), new object[] { target, backgroundImage });
+                return;
+            }
+
+            //set content - switch by type
+            if (target.GetType() == typeof(Button))
+            {
+                ((Button)target).BackgroundImage = backgroundImage;
+            }
+            else if (target.GetType() == typeof(TextBox))
+            {
+                ((TextBox)target).BackgroundImage = backgroundImage;
+            }
+            else if (target.GetType() == typeof(CheckBox))
+            {
+                ((CheckBox)target).BackgroundImage = backgroundImage;
+            }
+            else
+            {
+                throw new NotSupportedException("iotec.GUI.Common - setBackgroundImage(..): ERROR: The objecttype is not supported! Please add the object type to the setBackgroundImage() Functiuon.");
+            }
+        }
+
         
     }
 }

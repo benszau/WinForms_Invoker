@@ -223,7 +223,124 @@ namespace WinForms_Invoker
             }
         }
 
-      
-      
+        private delegate void setImageHandler(object target, Image image);
+        /// <summary>
+        /// Set the image (NOT background image) of the given object GUI-thread-save using invoke.
+        /// </summary>
+        /// <param name="target">The object that should be enabled. Check if the object type is supported...</param>
+        /// <param name="enable">The image that is to be set</param>
+        protected void setImage(object target, Image image)
+        {
+            if (target == null)
+            {
+                return;
+            }
+
+            if (this.InvokeRequired) //me is an objekt of aktual Form
+            {
+                Invoke(new setImageHandler(setImage), new object[] { target, image });
+                return;
+            }
+            
+            //set content - switch by type
+            if (target.GetType() == typeof(Button))
+            {
+                ((Button)target).Image = image;
+            }
+            else if (target.GetType() == typeof(CheckBox))
+            {
+                ((CheckBox)target).Image = image;
+            }
+            else if (target.GetType() == typeof(PictureBox))
+            {
+                PictureBox targetBox = ((PictureBox)target);
+                if (targetBox.Image != null)
+                {
+                    lock (targetBox.Image)
+                    {
+                        targetBox.Image = image;
+                    }
+                }
+                else
+                {
+                    ((PictureBox)target).Image = image;
+                }
+            }
+            else
+            {
+                throw new NotSupportedException("iotec.GUI.Common - setImage(..): ERROR: The objecttype is not supported! Please add the object type to the setImage() Functiuon.");
+            }
+        }
+
+        private delegate void setCheckBoxListCheckedStateHandler(object target, int index, CheckState check);
+        /// <summary>
+        /// Set the checked state of a checkbox-list entry.
+        /// </summary>
+        /// <param name="target">The checkbox-list object that holds the listitems.</param>
+        /// <param name="index">Index of the listbox item</param>
+        /// <param name="check">true for checked, false for unchecked</param>
+        protected void setCheckBoxListCheckedState(object target, int index, CheckState check)
+        {
+            if (target == null)
+            {
+                return;
+            }
+
+            if (this.InvokeRequired) //me is an objekt of aktual Form
+            {
+                Invoke(new setCheckBoxListCheckedStateHandler(setCheckBoxListCheckedState), new object[] { target, index, check });
+                return;
+            }
+
+            //set content - switch by type
+            if (target.GetType() == typeof(CheckedListBox))
+            {
+                CheckedListBox box = (CheckedListBox)target;
+                if (box.Items.Count > index)
+                {
+                    box.SetItemCheckState(index, check);
+                }
+            }
+            else
+            {
+                throw new NotSupportedException("iotec.GUI.Common - setCheckBoxListCheckedState(..): ERROR: The objecttype is not supported! Please add the object type to the setCheckBoxListCheckedState() Functiuon.");
+            }
+        }
+
+        private delegate void setListBoxItemHandler(object target, int index, object item);
+        /// <summary>
+        /// Updates an Item of a listbox.
+        /// </summary>
+        /// <param name="target">The listbox object that holds the listitems.</param>
+        /// <param name="index">Index of the listbox item</param>
+        /// <param name="item">The object that should be inserted</param>
+        protected void setListBoxItem(object target, int index, object item)
+        {
+            if (target == null)
+            {
+                return;
+            }
+
+            if (this.InvokeRequired) //me is an objekt of aktual Form
+            {
+                Invoke(new setListBoxItemHandler(setListBoxItem), new object[] { target, index, item });
+                return;
+            }
+
+            //set content - switch by type
+            if (target.GetType() == typeof(ListBox))
+            {
+                ListBox box = (ListBox)target;
+                if (box.Items.Count > index)
+                {
+                    box.Items[index] = item;
+                }
+            }
+            else
+            {
+                throw new NotSupportedException("iotec.GUI.Common - setListBoxItem(..): ERROR: The objecttype is not supported! Please add the object type to the setListBoxItem() Functiuon.");
+            }
+        }
+
     }
 }
